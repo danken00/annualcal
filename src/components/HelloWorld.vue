@@ -12,11 +12,11 @@
       <th class="dayNumber text-center">S</th>
     </tr>
     <tr v-for="(week, index) in weeks" :key="index">
-      <th>
-        {{ week.monthName }}
+      <th :class="getWeekBorders(week)">
+        {{ week.firstFullWeekOfMonth ? week.monthName : '' }}
       </th>
       <template v-for="day in week.weekData" :key="day">
-        <td :class="{'border-top': day.borderTop, 'border-start': day.borderStart, 'border-dark': true}">
+        <td :class="getDayBorders(day, week, events)">
           {{ day.dateObject.format('D') }}
         </td>
       </template>
@@ -28,17 +28,58 @@
 <script>
 import dayjs from 'dayjs'
 
+var isBetween = require('dayjs/plugin/isBetween')
+dayjs.extend(isBetween)
+
 export default {
   name: 'HelloWorld',
   data() {
     return {
-      weeks: {}
+      weeks: {},
+      events: [{
+        'name': 'Preseason testing (Bahrain)',
+        'startDate': dayjs('2023-02-23'),
+        'endDate': dayjs('2023-02-25')
+      }, {
+        'name': 'Bahrain',
+        'startDate': dayjs('2023-03-03'),
+        'endDate': dayjs('2023-03-05')
+      }]
     }
   },
   created() {
     this.generateCalendar()
   },
   methods: {
+    getWeekBorders(week) {
+      const borderTop = week.firstFullWeekOfMonth;
+      return ['border-dark', borderTop ? 'border-top' : null]
+    },
+    getDayBorders(day, week, events) {
+      const borderStart = day.dateObject.date() == 1 && day.dateObject.day() != 1;
+      const borderTop = week.monthChangeWeek && day.dateObject.date() <= 7;
+      const borderBottom = week.monthChangeWeek && day.dateObject.date() >= 20;
+      let shouldHighlight = false;
+      let shouldHighlightStart = false;
+      let shouldHighlightEnd = false;
+
+      events.forEach((calendarEvent) => {
+        if (day.dateObject.isBetween(calendarEvent.startDate, calendarEvent.endDate, 'day', '[]')) {
+          shouldHighlight = true;
+
+          if (day.dateObject.isSame(calendarEvent.startDate, 'day')) {
+            shouldHighlightStart = true;
+          }
+          if (day.dateObject.isSame(calendarEvent.endDate, 'day')) {
+            shouldHighlightEnd = true;
+          }
+        }
+      });
+
+      return ['border-dark', borderTop ? 'border-top' : null, shouldHighlight ? 'highlight' : null,
+        shouldHighlightStart ? 'highlight-start' : null, shouldHighlightEnd ? 'highlight-end' : null,
+        borderBottom ? 'border-bottom' : null, borderStart ? 'border-start' : null]
+    },
     generateCalendar(year) {
       let targetYear = year != null ? year : dayjs().year()
       let currentDay = dayjs(targetYear + '-01-01')
@@ -46,24 +87,33 @@ export default {
       let previousMonth = -1
       let currentWeek = []
       let weekCounter = 1;
+      let firstFullWeekOfMonth = false;
 
       while (currentDay <= lastDayOfYear) {
-        let borderTop = currentDay.date() == 1
-        let borderStart = currentDay.date() == 1
-
         let dayObject = {
-          'dateObject': currentDay, 'monthDayNumber': currentDay.format('D'), 'borderTop': borderTop,
-          'borderStart': borderStart
+          'dateObject': currentDay, 'monthDayNumber': currentDay.format('D')
         }
 
         currentWeek.push(dayObject)
+
+        if (currentDay.date() == 7) {
+          firstFullWeekOfMonth = true;
+        }
 
         // If Sunday, bump the week
         if (currentDay.day() == 0) {
           let monthChange = previousMonth != currentDay.month()
 
           this.weeks[weekCounter] = {
-            weekData: currentWeek, monthName: monthChange ? currentDay.format('MMMM') : null
+            weekData: currentWeek,
+            monthName: currentDay.format('MMMM'),
+            monthChangeWeek: monthChange,
+            firstFullWeekOfMonth: firstFullWeekOfMonth
+          }
+
+          // Reset the tracker for first full week of month
+          if (firstFullWeekOfMonth) {
+            firstFullWeekOfMonth = false;
           }
 
           previousMonth = currentDay.month()
@@ -75,17 +125,12 @@ export default {
       }
     }
   },
-  computed: {
-    getBorders() {
-      console.log(this)
-      return this.borderTop ? 'border-top' : '';
-    }
-  }
+  computed: {}
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style scoped lang="scss">
 .monthName {
   width: 300px;
   text-align: left;
@@ -93,5 +138,25 @@ export default {
 
 .dayNumber {
   width: 40px;
+}
+
+.highlight {
+  /*display: inline;*/
+  /*padding: .25em 0;*/
+  background: #FFC107;
+  /*color: #ffffff;*/
+  /*box-shadow: .5em 0 0 #FFC107, -.5em 0 0 #FFC107;*/
+
+  background-clip: content-box;
+
+  &.highlight-start {
+    border-start-start-radius: 15px;
+    border-end-start-radius: 15px;
+  }
+
+  &.highlight-end {
+    border-start-end-radius: 15px;
+    border-end-end-radius: 15px;
+  }
 }
 </style>
