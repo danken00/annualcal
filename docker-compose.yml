@@ -1,0 +1,10 @@
+services:
+  web:
+    build:
+      context: annualcal
+      target: development
+    ports:
+      - 8080:8080
+    volumes:
+      - ./annualcal:/project
+      - /project/node_modules
