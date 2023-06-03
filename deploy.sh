@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 
 echo "Have you committed your work? This will delete anything not committed!"
 echo " "
@@ -16,6 +16,6 @@ then
   git --work-tree dist commit -m 'Deploy'
   git push origin HEAD:gh-pages --force
   rm -r dist
-  git checkout -f master 
+  git checkout -f master
   git branch -D gh-pages
 fi
