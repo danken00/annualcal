@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 echo "Have you committed your work? This will delete anything not committed!"
 echo " "
@@ -17,5 +17,5 @@ then
   git push origin HEAD:gh-pages --force
   rm -r dist
   git checkout -f master
-  git branch -D gh-pages 
+  git branch -D gh-pages
 fi
