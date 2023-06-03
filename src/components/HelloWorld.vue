@@ -12,7 +12,7 @@
             <th class="dayNumber text-center">S</th>
         </tr>
         <tr v-for="(week, index) in weeks" :key="index">
-            <th :class="getWeekBorders(week)">
+            <th :class="getWeekBorders(week)" class="monthName">
                 {{ week.firstFullWeekOfMonth ? week.monthName : '' }}
             </th>
             <template v-for="day in week.weekData" :key="day">
@@ -42,13 +42,47 @@ export default {
         return {
             weeks: {},
             events: [{
-                'name': 'Preseason testing (Bahrain)',
-                'startDate': dayjs('2023-02-23'),
-                'endDate': dayjs('2023-02-28')
+                'id': 1,
+                'name': 'Chamonix',
+                'location': 'Private Garden Le Praz',
+                'startDate': dayjs('2023-07-02'),
+                'endDate': dayjs('2023-07-07'),
+                'colour': '#a7bed3'
             }, {
-                'name': 'Bahrain',
-                'startDate': dayjs('2023-03-03'),
-                'endDate': dayjs('2023-03-05')
+                'id': 2,
+                'name': 'Italy - Genoa',
+                'location': 'The Seven Residence',
+                'startDate': dayjs('2023-07-07'),
+                'endDate': dayjs('2023-07-10'),
+                'colour': '#c6e2e9'
+            }, {
+                'id': 3,
+                'name': 'Italy - Lake Como',
+                'location': 'Residence Diaz',
+                'startDate': dayjs('2023-07-10'),
+                'endDate': dayjs('2023-07-12'),
+                'colour': '#f1ffc4'
+            }, {
+                'id': 4,
+                'name': 'Italy - Milan',
+                'location': 'Idea Hotel AIRPORT',
+                'startDate': dayjs('2023-07-12'),
+                'endDate': dayjs('2023-07-13'),
+                'colour': '#ffcaaf'
+            }, {
+                'id': 5,
+                'name': 'Hungary - Budapest',
+                'location': 'Hilto Garden Inn',
+                'startDate': dayjs('2023-07-13'),
+                'endDate': dayjs('2023-07-16'),
+                'colour': '#dab894'
+            }, {
+                'id': 6,
+                'name': 'Hungary - Budapest',
+                'location': 'Dormero',
+                'startDate': dayjs('2023-07-20'),
+                'endDate': dayjs('2023-07-21'),
+                'colour': '#ffc6ff'
             }]
         }
     },
@@ -64,26 +98,8 @@ export default {
             const borderStart = day.dateObject.date() == 1 && day.dateObject.day() != 1;
             const borderTop = week.monthChangeWeek && day.dateObject.date() <= 7;
             const borderBottom = week.monthChangeWeek && day.dateObject.date() >= 20;
-            let shouldHighlight = false;
-            let shouldHighlightStart = false;
-            let shouldHighlightEnd = false;
 
-            // events.forEach((calendarEvent) => {
-            //     if (day.dateObject.isBetween(calendarEvent.startDate, calendarEvent.endDate, 'day', '[]')) {
-            //         shouldHighlight = true;
-            //
-            //         if (day.dateObject.isSame(calendarEvent.startDate, 'day')) {
-            //             shouldHighlightStart = true;
-            //         }
-            //         if (day.dateObject.isSame(calendarEvent.endDate, 'day')) {
-            //             shouldHighlightEnd = true;
-            //         }
-            //     }
-            // });
-
-            return ['border-dark', borderTop ? 'border-top' : null, shouldHighlight ? 'highlight' : null,
-                shouldHighlightStart ? 'highlight-start' : null, shouldHighlightEnd ? 'highlight-end' : null,
-                borderBottom ? 'border-bottom' : null, borderStart ? 'border-start' : null]
+            return ['border-dark', borderTop ? 'border-top' : null, borderBottom ? 'border-bottom' : null, borderStart ? 'border-start' : null]
         },
         getDayEvents(day, events) {
             const eventsForDay = [];
@@ -150,8 +166,12 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .monthName {
-  width: 300px;
+  width: 150px;
   text-align: left;
+  padding-left: 30px;
+  color: #777;
+  //font-size: 0.8rem;
+  font-weight: normal;
 }
 
 .dayNumber {
@@ -159,9 +179,11 @@ export default {
 }
 
 table {
-    td {
-        position: relative;
-    }
+  td {
+    position: relative;
+    font-size: 0.9rem;
+    padding: 4px 3px;
+  }
 }
 
 .highlight {
