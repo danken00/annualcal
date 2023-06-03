@@ -18,38 +18,17 @@
             <template v-for="day in week.weekData" :key="day">
                 <td :class="getDayBorders(day, week, events)">
                     {{ day.dateObject.format('D') }}
-                    <DayDrawer :events="getDayEvents(day, events)"></DayDrawer>
+                    <DayCell :events="getDayEvents(day, events)"></DayCell>
                 </td>
             </template>
         </tr>
         </thead>
     </table>
-
-  <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    ...
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
 </template>
 
 <script>
 import dayjs from 'dayjs'
-import {reactive, onMounted} from 'vue'
-import DayDrawer from './DayDrawer.vue'
+import DayCell from './DayCell.vue'
 
 const isBetween = require('dayjs/plugin/isBetween');
 dayjs.extend(isBetween)
@@ -57,7 +36,7 @@ dayjs.extend(isBetween)
 export default {
     name: 'HelloWorld',
     components: {
-        DayDrawer
+        DayCell
     },
     data() {
         return {
@@ -81,7 +60,7 @@ export default {
             const borderTop = week.firstFullWeekOfMonth;
             return ['border-dark', borderTop ? 'border-top' : null]
         },
-        getDayBorders(day, week, events) {
+        getDayBorders(day, week) {
             const borderStart = day.dateObject.date() == 1 && day.dateObject.day() != 1;
             const borderTop = week.monthChangeWeek && day.dateObject.date() <= 7;
             const borderBottom = week.monthChangeWeek && day.dateObject.date() >= 20;
@@ -165,21 +144,6 @@ export default {
     computed: {}
 }
 
-const state = reactive({
-    modal_demo: null,
-})
-
-onMounted(() => {
-    state.modal_demo = new bootstrap.Modal('#modal_demo', {})
-})
-
-function openModal() {
-    state.modal_demo.show()
-}
-
-function closeModal() {
-    state.modal_demo.hide()
-}
 
 </script>
 
@@ -192,6 +156,12 @@ function closeModal() {
 
 .dayNumber {
   width: 40px;
+}
+
+table {
+    td {
+        position: relative;
+    }
 }
 
 .highlight {
