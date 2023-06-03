@@ -1,5 +1,5 @@
 module.exports = {
-  publicPath: '/',
+  publicPath: '/annualcal',
   pages: {
     index: {
       // entry for the page
