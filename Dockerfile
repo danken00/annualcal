@@ -8,19 +8,14 @@ COPY .. .
 
 RUN yarn global add @vue/cli
 RUN yarn install
+RUN apk update
+RUN apk add git
 ENV HOST=0.0.0.0
 CMD ["yarn", "run", "serve"]
 
-FROM development as dev-envs
-RUN <<EOF
-apk update
-apk add git
-EOF
+RUN addgroup -S docker
+RUN adduser -S --shell /bin/bash --ingroup docker vscode
 
-RUN <<EOF
-addgroup -S docker
-adduser -S --shell /bin/bash --ingroup docker vscode
-EOF
 # install Docker tools (cli, buildx, compose)
 COPY --from=gloursdocker/docker / /
 CMD ["yarn", "run", "serve"]
