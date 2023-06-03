@@ -10,7 +10,7 @@ then
   echo "Let's go!"
   echo " "
   set -e
-  git checkout --orphan gh-pages
+  git checkout --orphan gh-pages 
   npm run build
   git --work-tree dist add --all
   git --work-tree dist commit -m 'Deploy'
