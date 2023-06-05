@@ -80,6 +80,7 @@ export default {
   z-index: 200;
   position: relative;
   font-size: 12px;
+  pointer-events: none;
 }
 
 .modal {
