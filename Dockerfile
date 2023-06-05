@@ -10,6 +10,8 @@ RUN yarn global add @vue/cli
 RUN yarn install
 RUN apk update
 RUN apk add git
+RUN dos2unix deploy.sh
+RUN git config --global --add safe.directory /project
 ENV HOST=0.0.0.0
 CMD ["yarn", "run", "serve"]
 
