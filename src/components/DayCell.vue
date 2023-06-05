@@ -9,7 +9,7 @@ let modalDemo = null;
 
 export default {
     name: 'DayCell',
-    props: ['events'],
+    props: ['events', 'day'],
     methods: {
         openModal() {
             modalDemo = new Modal(document.getElementById('event-modal' + this.events[0].id), {})
@@ -38,6 +38,7 @@ export default {
 </script>
 
 <template>
+    <div class="day-number">{{ day.dateObject.format('D') }}</div>
     <div class="day-cell-bar" v-for="(event, index) in this.events" :key="index" @click="openModal"
          :style="{ background: event.colour}"></div>
 
@@ -72,6 +73,13 @@ export default {
   top: 5px;
   height: 16px;
   width: 100%;
+  z-index: 100;
+}
+
+.day-number {
+  z-index: 200;
+  position: relative;
+  font-size: 12px;
 }
 
 .modal {

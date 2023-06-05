@@ -17,8 +17,8 @@
             </th>
             <template v-for="day in week.weekData" :key="day">
                 <td :class="getDayBorders(day, week, events)">
-                    {{ day.dateObject.format('D') }}
-                    <DayCell :events="getDayEvents(day, events)"></DayCell>
+                    <!--                    {{ day.dateObject.format('D') }}-->
+                    <DayCell :events="getDayEvents(day, events)" :day="day"></DayCell>
                 </td>
             </template>
         </tr>
@@ -166,7 +166,7 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
 .monthName {
-  width: 150px;
+  width: 130px;
   text-align: left;
   padding-left: 30px;
   color: #777;
@@ -182,7 +182,7 @@ table {
   td {
     position: relative;
     font-size: 0.9rem;
-    padding: 4px 3px;
+    padding: 5px 4px;
   }
 }
 
